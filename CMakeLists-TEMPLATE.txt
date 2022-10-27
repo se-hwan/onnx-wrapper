@@ -1,3 +1,30 @@
+/* COMMON COMMANDS
+    message("")                             --> prints message during cmake process
+    cmake_minimum_required(VERSION XX)      --> minimum cmake version
+    add_executable([executable] [main.cpp]) --> defines executable target with name
+    add_library()                           --> adds library target to build
+    add_subdirectory()                      --> adds subdirectory to build
+*/
+
+/* VARIABLES
+    set(TEST_VAR "TEST_VALUE") // set and assign arbitrary variable
+    message("${TEST_VAR}")
+    Unique environment variables:
+        https://cmake.org/cmake/help/latest/manual/cmake-env-variables.7.html
+*/
+
+/* SHARED AND STATIC LIBRARIES
+    Shared:
+        Windows: .dll
+        Mac OS X: .dylib
+        Linux: .so
+
+    Static:
+        Windows: .lib
+        Mac OS X: .a
+        Linux: .a
+*/
+
 
 // VERSION OF CMAKE STANDARD (USUALLY 3.1+)
 cmake_minimum_required(VERSION 3.1)
@@ -8,8 +35,24 @@ project(onnx-wrapper-test)
 // C++ STANDARD TO ENFORCE WHEN COMPILING
 set(CMAKE_CXX_STANDARD 11)
 
+set(CMAKE_CXX_FLAGS "-Wall") // defines CMAKE_CXX_FLAGS to have all warnings on
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall") // appends CMAKE_CXX_FLAGS with previous definitions
+
+// SET RUNTIME DIRECTORY
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+// TO BUILD LIBRARY WITH TARGET:
+set(SOURCES main.cpp lib/[libraries.cpp] lib/[libaries.hpp])
+
+// TO BUILD LIBRARY SEPARATELY:
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+add_library([library_name] SHARED lib/[lib_folder]/[lib_name.cpp]) // shared library
+add_library([library_name] STATIC lib/[lib_folder]/[lib_name.cpp]) // static library
+
 // EXECUTABLE NAME AND MAIN FILE
 add_executable(test_wrapper test.cpp)
+
+target_link_libraries([executable] [library_name])
 
 // OPERATING SYSTEM CHECK
 if(UNIX)
@@ -25,10 +68,11 @@ endif()
 // ${CMAKE_SYSTEM_PROCESSOR}
 // ${CMAKE_HOST_SYSTEM_NAME}
 
-// DEFINES "MACRO", GLOBAL VARIABLE ACCESSIBLE IN CODE
-// USUALLY USED FOR #IFNDEF [EXAMPLEMACRO]
+// DEFINES "MACRO", GLOBAL VARIABLE ACCESSIBLE IN SOURCE CODE
+// USUALLY USED FOR #IFNDEF [EXAMPLEMACRO] 
 // # ENDIF
 add_definitions(-DEXAMPLEMACRO="example_macro")
+
 
 
 
